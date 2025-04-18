@@ -1,30 +1,22 @@
 import "@testing-library/jest-dom";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import Keypad from "../components/Keypad";
 
-let container;
-
 beforeEach(() => {
-  container = render(<Keypad />).container;
+  render(<Keypad />);
 });
 
-test("displays one input", () => {
-  const input = container.querySelector("input");
-  expect(input).toBeInTheDocument();
-  expect(input.tagName).toBe("INPUT");
+test("renders buttons for digits 0-9", () => {
+  for (let i = 0; i <= 9; i++) {
+    expect(screen.getByText(i.toString())).toBeInTheDocument();
+  }
 });
 
-test("displays an input with the right input type", () => {
-  const input = container.querySelector("input");
-  expect(input.type).toBe("password");
-});
-
-test("typing in the input triggers console output", () => {
+test("clicking a button logs the digit", () => {
   console.log = jest.fn();
 
-  const input = container.querySelector("input");
-  fireEvent.change(input, { target: { value: "123" } });
+  const button = screen.getByText("5");
+  fireEvent.click(button);
 
-  expect(console.log).toHaveBeenCalled();
-  expect(console.log.mock.calls[0][0]).toBe("Entering password...");
+  expect(console.log).toHaveBeenCalledWith("5");
 });
